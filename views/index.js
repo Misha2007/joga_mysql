@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const hbs = require("express-handlebars");
-
+const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("views.engine", "hbs");
 app.engine(
@@ -13,10 +13,10 @@ app.engine(
   })
 );
 
+app.use(express.static("public"));
+
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
-
-const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const con = mysql.createConnection({
