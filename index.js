@@ -39,12 +39,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/article/:slug", (req, res) => {
-  let query = `SELECT * FROM article WHERE slug="${req.params.slug}"`;
-  let article;
+  let query = `SELECT article.*, author.id, author.name AS author_name
+                FROM article 
+                JOIN author ON article.author_id = author.id 
+                WHERE article.slug="${req.params.slug}"`;
   con.query(query, (err, result) => {
     if (err) throw err;
     article = result;
-    console.log(article);
     res.render("article", {
       article: article,
     });
