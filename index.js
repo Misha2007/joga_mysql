@@ -24,6 +24,7 @@ const con = mysql.createConnection({
   user: "root",
   password: "qwerty",
   database: "joga_mysql",
+  multipleStatements: true,
 });
 
 app.get("/", (req, res) => {
@@ -39,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/article/:slug", (req, res) => {
-  let query = `SELECT article.*, author.id, author.name AS author_name
+  let query = `SELECT article.*, author.id AS author_id, author.name AS author_name
                 FROM article 
                 JOIN author ON article.author_id = author.id 
                 WHERE article.slug="${req.params.slug}"`;
@@ -48,6 +49,20 @@ app.get("/article/:slug", (req, res) => {
     article = result;
     res.render("article", {
       article: article,
+    });
+  });
+});
+
+app.get("/:id", (req, res) => {
+  let query = `SELECT * FROM article WHERE article.author_id ="${req.params.id}";
+  SELECT * FROM author WHERE author.id ="${req.params.id}";`;
+  let articles = [];
+  con.query(query, (err, result) => {
+    if (err) throw err;
+    articles = result;
+    res.render("author", {
+      articles: articles[0],
+      author: articles[1],
     });
   });
 });
