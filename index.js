@@ -15,45 +15,15 @@ app.engine(
 
 app.use(express.static("public"));
 
-const mysql = require("mysql2");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "qwerty",
-  database: "joga_mysql",
-  multipleStatements: true,
-});
+const articleRoutes = require("./routes/article");
 
-app.get("/", (req, res) => {
-  let query = "SELECT * FROM article";
-  let articles = [];
-  con.query(query, (err, result) => {
-    if (err) throw err;
-    articles = result;
-    res.render("index", {
-      articles: articles,
-    });
-  });
-});
+app.use("/", articleRoutes);
+app.use("/article", articleRoutes);
 
-app.get("/article/:slug", (req, res) => {
-  let query = `SELECT article.*, author.id AS author_id, author.name AS author_name
-                FROM article 
-                JOIN author ON article.author_id = author.id 
-                WHERE article.slug="${req.params.slug}"`;
-  con.query(query, (err, result) => {
-    if (err) throw err;
-    article = result;
-    res.render("article", {
-      article: article,
-    });
-  });
-});
-
-app.get("/:id", (req, res) => {
+app.get("/author/:id", (req, res) => {
   let query = `SELECT * FROM article WHERE article.author_id ="${req.params.id}";
   SELECT * FROM author WHERE author.id ="${req.params.id}";`;
   let articles = [];
@@ -65,11 +35,6 @@ app.get("/:id", (req, res) => {
       author: articles[1],
     });
   });
-});
-
-con.connect((err) => {
-  if (err) throw err;
-  console.log("Connected!");
 });
 
 app.listen(3003, () => {
