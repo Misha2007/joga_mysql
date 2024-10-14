@@ -136,3 +136,18 @@ table th {
 table th {
   background-color: #eee;
 }
+
+#authors {
+  list-style: none;
+  font-size: 20px;
+  color: #000;
+}
+
+.author-link {
+  text-decoration: none;
+  color: #000;
+}
+
+.author-link:hover {
+  text-decoration: underline;
+}
